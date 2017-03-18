@@ -18,8 +18,8 @@ api.add_resource(FoodRestList,"/food")
 api.add_resource(FoodRest,"/food/<food_id>")
 api.add_resource(UserRestList,"/register")
 
-for user in User.objects():
-    print(mlab.item2json(user))
+# for user in User.objects():
+#     print(mlab.item2json(user))
 
 class LoginCredentials(Resource):
     def __init__(self, id, username, password):
