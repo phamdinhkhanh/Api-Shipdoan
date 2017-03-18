@@ -1,33 +1,25 @@
 from flask import Flask
-from flask_restful import Resource,Api
-from flask_jwt import JWT,jwt_required
-from mongoengine import Document,StringField
-from db_class import User,Food
-from task_resource import TaskListRest, TaskRes, UserListRes
-import datetime
 import mlab
-
-app = Flask(__name__)
-api = Api(app)
-
-app.config["SECRET_KEY"]="SHIP DO AN DEM"
-
-JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600)
-}
+from flask_restful import Resource,Api
+from resouce.food_res import FoodRest,FoodRestList,UserRestList
+from flask_jwt import JWT, jwt_required
+from model.food import Food
+from model.user import User
 
 mlab.connect()
 
-food = Food(name = "VIT OM SAU", url = "www.facebook.com",coint_old = "bitcoint", coint_new = "cointnew", cout_rate = 9, rate = 0.85)
-food.save()
+app = Flask(__name__)
+api = Api(app)
+app.config["SECRET_KEY"]="SHIP DO AN DEM"
+# user = User(username = "khanh", password = "pham")
+# user.save()
 
-for food in Food.objects():
-    # food.delete()
-    print(mlab.itemjson(food))
+api.add_resource(FoodRestList,"/food")
+api.add_resource(FoodRest,"/food/<food_id>")
+api.add_resource(UserRestList,"/register")
 
 for user in User.objects():
-    print(mlab.itemjson(user))
-
+    print(mlab.item2json(user))
 
 class LoginCredentials(Resource):
     def __init__(self, id, username, password):
@@ -49,15 +41,16 @@ class LoginCredentials(Resource):
     jwt = JWT(app, authentication_handler=authenticate, identity_handler=identity)
 
 
+
 @app.route('/')
-# @jwt_required()
 def hello_world():
-    return 'Hello World!'
-
-api.add_resource(TaskListRest,"/tasks")
-api.add_resource(TaskRes,"/tasks/<task_id>")
-api.add_resource(UserListRes,"/register")
+    return 'Hello to ship do an nhanh app'
 
 
-if __name__=='__main__':
+# @app.after_request
+# def apply_caching(response):
+#     response.headers["X-Frame-Options"] = "SAMEORIGIN"
+#     return response
+
+if __name__ == '__main__':
     app.run()
